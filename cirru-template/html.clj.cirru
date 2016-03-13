@@ -3,7 +3,7 @@ require $ quote $ [] hiccup.core :refer $ [] html
 
 defn render (data)
   html $ [] :html
-    [] :head ([] :title |Respo)
+    [] :head ([] :title "|Respo Client")
       [] :link $ {} (:type |text/css)
         :href |css/style.css
         :rel |stylesheet
