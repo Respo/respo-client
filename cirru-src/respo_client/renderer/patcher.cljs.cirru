@@ -54,9 +54,9 @@ defn replace-style (target op)
     aset (.-style target)
       , style-name style-value
 
-defn add-element (target op)
+defn add-element (target op no-bubble-collection)
   let
-    (new-element $ make-element op)
+    (new-element $ make-element op no-bubble-collection)
       parent-element $ .-parentElement target
       next-element $ .-nextElementSibling target
     if (some? next-element)
@@ -66,18 +66,18 @@ defn add-element (target op)
 defn rm-element (target op)
   .remove target
 
-defn replace-element (target op)
+defn replace-element (target op no-bubble-collection)
   let
-    (new-element $ make-element op)
+    (new-element $ make-element op no-bubble-collection)
     .insertBefore target new-element
     .remove target
 
-defn append-element (target op)
+defn append-element (target op no-bubble-collection)
   let
-    (new-element $ make-element op)
+    (new-element $ make-element op no-bubble-collection)
     .appendChild target new-element
 
-defn apply-dom-changes (changes mount-point)
+defn apply-dom-changes (changes mount-point no-bubble-collection)
   let
     (root $ .-firstChild mount-point)
     doall $ ->> changes $ map $ fn (op)
@@ -93,8 +93,8 @@ defn apply-dom-changes (changes mount-point)
           :rm-prop $ rm-prop target op-data
           :add-style $ add-style target op-data
           :rm-style $ rm-style target op-data
-          :add $ add-element target op-data
+          :add $ add-element target op-data no-bubble-collection
           :rm $ rm-element target op-data
-          :replace $ replace-element target op-data
-          :append $ append-element target op-data
+          :replace $ replace-element target op-data no-bubble-collection
+          :append $ append-element target op-data no-bubble-collection
           .error js/console "|not implemented:" op-type

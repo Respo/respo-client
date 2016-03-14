@@ -11,7 +11,7 @@ defn style->string (styles)
       str (name k)
         , |: v |;
 
-defn make-element (virtual-element)
+defn make-element (virtual-element no-bubble-collection)
   let
     (tag-name $ name $ :name virtual-element)
       props $ :props virtual-element
@@ -22,7 +22,7 @@ defn make-element (virtual-element)
           (item $ last entry)
           if (string? item)
             .createTextNode js/document item
-            make-element item
+            make-element item no-bubble-collection
 
       event-keys $ into ([])
         keys $ :events virtual-element
@@ -56,6 +56,18 @@ defn make-element (virtual-element)
           aset element k $ if (= k |style)
             style->string v
             , v
+
+    doall $ ->> (:events virtual-element)
+      map $ fn (entry)
+        .log js/console "|Looking into event:" entry
+        let
+          (event-name $ key entry)
+            name-in-string $ string/replace (name event-name)
+              , |- |
+            maybe-listener $ get no-bubble-collection event-name
+
+          if (some? maybe-listener)
+            aset element name-in-string maybe-listener
 
     doall $ ->> child-elements $ map $ fn (child-element)
       .appendChild element child-element

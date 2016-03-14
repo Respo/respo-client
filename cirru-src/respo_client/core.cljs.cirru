@@ -45,8 +45,6 @@ set! js/window.onload -main
 
 defn fig-reload ()
   .clear js/console
-  .log js/console |reload!
   let
     (app-root $ .querySelector js/document |#app)
-    release-instance app-root
-    mount-demo
+    .info js/console |Reloaded!

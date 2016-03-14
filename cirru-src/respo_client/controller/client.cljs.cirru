@@ -41,13 +41,13 @@ defn activate-instance (entire-dom mount-point deliver-event)
 
     set! (.-innerHTML mount-point)
       , |
-    .appendChild mount-point $ make-element entire-dom
+    .appendChild mount-point $ make-element entire-dom no-bubble-collection
 
 defn patch-instance (changes mount-point deliver-event)
   let
     (no-bubble-collection $ ->> no-bubble-events (map $ fn (event-name) ([] event-name $ build-listener event-name deliver-event)) (into $ {}))
 
-    apply-dom-changes changes mount-point
+    apply-dom-changes changes mount-point no-bubble-collection
 
 defn initialize-instance (mount-point deliver-event)
   let
