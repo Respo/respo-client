@@ -17,11 +17,23 @@ defn read-coord (event)
     .-dataset
     .-coord
 
+defn read-events (event)
+  read-string $ ->> event (.-target)
+    .-dataset
+    .-events
+
 defn build-listener (event-name deliver-event)
   fn (event)
     let
       (coord $ read-coord event)
-      deliver-event coord event-name $ event->edn event
+        active-events $ read-events event
+      if
+        some
+          fn (defined-event)
+            = defined-event event-name
+          , active-events
+
+        deliver-event coord event-name $ event->edn event
 
 defn activate-instance (entire-dom mount-point deliver-event)
   let

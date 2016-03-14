@@ -24,10 +24,18 @@ defn make-element (virtual-element)
             .createTextNode js/document item
             make-element item
 
+      event-keys $ into ([])
+        keys $ :events virtual-element
+
     set!
       ->> element (.-dataset)
         .-coord
       pr-str $ :coord virtual-element
+
+    set!
+      ->> element (.-dataset)
+        .-events
+      pr-str event-keys
 
     doall $ ->> props
       filter $ fn (entry)
