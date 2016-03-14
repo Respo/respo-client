@@ -1,8 +1,8 @@
 
-ns respo.renderer.patcher $ :require
+ns respo-client.renderer.patcher $ :require
   [] clojure.string :as string
-  [] respo.util.format :refer $ [] dashed->camel
-  [] respo.renderer.make-dom :refer $ [] make-element
+  [] respo-client.util.format :refer $ [] dashed->camel
+  [] respo-client.renderer.make-dom :refer $ [] make-element
 
 defn find-target (root coord)
   if

@@ -11,7 +11,7 @@
   :plugins [[cirru/lein-sepal "0.0.17"]
             [mvc-works/lein-html-entry "0.0.2"]
             [lein-cljsbuild "1.1.2"]
-            [lein-figwheel "0.5.0-3"]]
+            [lein-figwheel "0.5.0-6"]]
   :cirru-sepal {:paths ["cirru-src" "cirru-template"]}
   :html-entry {:file "template/html.clj" :output "resources/public/index.html"}
   :clean-targets ^{:protect false} [:target-path "resources/public/cljs"]
@@ -23,12 +23,14 @@
                                  :compiler {:main respo-client.core
                                             :asset-path "cljs/out"
                                             :output-to  "resources/public/cljs/main.js"
-                                            :output-dir "resources/public/cljs/out"}}
+                                            :output-dir "resources/public/cljs/out"
+                                            :verbose true}}
                        :web-prod {:source-paths ["src"]
                               :compiler {:output-to "resources/public/cljs/main.js"
                                          :optimizations :advanced
                                          :pretty-print false}}}}
   :figwheel {:css-dirs ["resources/public/css"]
+             :server-port 3450
              :load-warninged-code false}
   :profiles {:uberjar {:aot :all}}
   :parallel-build true)

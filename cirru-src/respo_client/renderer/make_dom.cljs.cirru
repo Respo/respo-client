@@ -1,8 +1,15 @@
 
-ns respo.renderer.make-dom $ :require
+ns respo-client.renderer.make-dom $ :require
   [] clojure.string :as string
-  [] respo.renderer.static-html :refer $ [] style->string
-  [] respo.util.format :refer $ [] dashed->camel
+  [] respo-client.util.format :refer $ [] dashed->camel
+
+defn style->string (styles)
+  string/join | $ ->> styles $ map $ fn (entry)
+    let
+      (k $ first entry)
+        v $ last entry
+      str (name k)
+        , |: v |;
 
 defn make-element (virtual-element)
   let

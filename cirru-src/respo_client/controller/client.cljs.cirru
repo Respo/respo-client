@@ -1,10 +1,10 @@
 
-ns respo.controller.client $ :require
-  [] respo.renderer.patcher :refer $ [] apply-dom-changes
+ns respo-client.controller.client $ :require
+  [] respo-client.renderer.patcher :refer $ [] apply-dom-changes
   [] cljs.reader :refer $ [] read-string
-  [] respo.util.time :refer $ [] io-get-time
-  [] respo.util.format :refer $ [] event->string event->edn
-  [] respo.renderer.make-dom :refer $ [] make-element
+  [] respo-client.util.time :refer $ [] io-get-time
+  [] respo-client.util.format :refer $ [] event->string event->edn
+  [] respo-client.renderer.make-dom :refer $ [] make-element
 
 defonce dom-registry $ atom $ {}
 

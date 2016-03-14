@@ -1,5 +1,5 @@
 
-ns respo.util.format $ :require $ [] clojure.string :as string
+ns respo-client.util.format $ :require $ [] clojure.string :as string
 
 defn dashed->camel
   (x)
