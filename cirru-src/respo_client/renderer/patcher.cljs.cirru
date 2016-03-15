@@ -92,6 +92,7 @@ defn apply-dom-changes (changes mount-point no-bubble-collection)
           :add-prop $ add-prop target op-data
           :rm-prop $ rm-prop target op-data
           :add-style $ add-style target op-data
+          :replace-style $ replace-style target op-data
           :rm-style $ rm-style target op-data
           :add $ add-element target op-data no-bubble-collection
           :rm $ rm-element target op-data

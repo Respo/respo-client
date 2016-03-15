@@ -59,7 +59,7 @@ defn make-element (virtual-element no-bubble-collection)
 
     doall $ ->> (:events virtual-element)
       map $ fn (entry)
-        .log js/console "|Looking into event:" entry
+        -- .log js/console "|Looking into event:" entry
         let
           (event-name $ key entry)
             name-in-string $ string/replace (name event-name)

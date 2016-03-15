@@ -1,5 +1,5 @@
-(defproject mvc-works/respo-client "0.1.0"
-  :description "Responsive DOM library"
+(defproject mvc-works/respo-client "0.1.1"
+  :description "Client for Responsive DOM library"
   :url "https://github.com/mvc-works/respo-client"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
