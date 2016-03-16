@@ -102,10 +102,7 @@ defn add-element (target op no-bubble-collection)
   let
     (new-element $ make-element op no-bubble-collection)
       parent-element $ .-parentElement target
-      next-element $ .-nextElementSibling target
-    if (some? next-element)
-      .insertBefore next-element new-element
-      .appendChild parent-element new-element
+    .insertBefore parent-element new-element target
 
 defn rm-element (target op)
   .remove target
@@ -113,7 +110,8 @@ defn rm-element (target op)
 defn replace-element (target op no-bubble-collection)
   let
     (new-element $ make-element op no-bubble-collection)
-    .insertBefore target new-element
+      parent-element $ .-parentElement target
+    .insertBefore parent-element new-element target
     .remove target
 
 defn append-element (target op no-bubble-collection)

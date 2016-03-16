@@ -15,7 +15,8 @@ defn make-element (virtual-element no-bubble-collection)
   let
     (tag-name $ name $ :name virtual-element)
       props $ :props virtual-element
-      children $ :children virtual-element
+      children $ into (sorted-map)
+        :children virtual-element
       element $ .createElement js/document tag-name
       child-elements $ ->> children $ map $ fn (entry)
         let
