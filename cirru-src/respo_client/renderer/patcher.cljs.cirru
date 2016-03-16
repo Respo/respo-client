@@ -2,7 +2,7 @@
 ns respo-client.renderer.patcher $ :require
   [] clojure.string :as string
   [] respo-client.util.format :refer $ [] dashed->camel
-  [] respo-client.renderer.make-dom :refer $ [] make-element
+  [] respo-client.renderer.make-dom :refer $ [] make-element style->string
 
 defn find-target (root coord)
   if
@@ -29,10 +29,14 @@ defn add-prop (target op)
   let
     (prop-name $ dashed->camel $ name $ key op)
       prop-value $ val op
-    aset target prop-name prop-value
+    if (= prop-name |style)
+      aset target prop-name $ style->string prop-value
+      aset target prop-name prop-value
 
 defn rm-prop (target op)
-  js-delete target $ dashed->camel $ name op
+  aset target
+    dashed->camel $ name op
+    , nil
 
 defn add-style (target op)
   let
@@ -44,8 +48,8 @@ defn add-style (target op)
 defn rm-style (target op)
   let
     (style-name $ dashed->camel $ name op)
-    js/delete (.-style target)
-      , style-name
+    aset (.-style target)
+      , style-name nil
 
 defn replace-style (target op)
   let

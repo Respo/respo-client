@@ -1,4 +1,4 @@
-(defproject mvc-works/respo-client "0.1.1"
+(defproject mvc-works/respo-client "0.1.2"
   :description "Client for Responsive DOM library"
   :url "https://github.com/mvc-works/respo-client"
   :license {:name "Eclipse Public License"
@@ -15,7 +15,6 @@
   :cirru-sepal {:paths ["cirru-src" "cirru-template"]}
   :html-entry {:file "template/html.clj" :output "resources/public/index.html"}
   :clean-targets ^{:protect false} [:target-path "resources/public/cljs"]
-  :main ^:skip-aot respo-client.core
   :target-path "target/%s"
   :cljsbuild {:builds {:web-dev {:source-paths ["src"]
                                  :figwheel {:websocket-host "repo"
