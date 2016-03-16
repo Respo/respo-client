@@ -2,7 +2,7 @@
 ns respo-client.renderer.patcher $ :require
   [] clojure.string :as string
   [] cljs.reader :refer $ [] read-string
-  [] respo-client.util.format :refer $ [] dashed->camel
+  [] respo-client.util.format :refer $ [] dashed->camel event->prop
   [] respo-client.renderer.make-dom :refer $ [] make-element style->string
   [] respo-client.util.information :refer $ [] no-bubble-events
 
@@ -61,22 +61,24 @@ defn replace-style (target op)
       , style-name style-value
 
 defn is-no-bubble? (event-name)
-  some?
-    some $ fn (x)
+  some? $ some
+    fn (x)
       = x event-name
     , no-bubble-events
 
-defn add-event (target event-name)
+defn add-event (target event-name no-bubble-collection)
   let
     (event-prop $ event->prop event-name)
       existing-events $ read-string $ -> target (.-dataset)
         .-events
       new-events-list $ pr-str $ conj existing-events event-name
+      maybe-listener $ get no-bubble-collection event-name
 
-    if (is-no-bubble? event-name)
-      aset target event-prop listener
-    set! $ -> target (.-dataset)
-      .-events
+    if (some? maybe-listener)
+      aset target event-prop maybe-listener
+    set!
+      -> target (.-dataset)
+        .-events
       , new-events-list
 
 defn rm-event (target event-name)
@@ -87,12 +89,13 @@ defn rm-event (target event-name)
       new-events-list $ pr-str $ ->> existing-events
         filter $ fn (x)
           not= x event-name
-        info $ []
+        into $ []
 
     if (is-no-bubble? event-name)
       aset target event-prop nil
-    set! $ -> target (.-dataset)
-      .-events
+    set!
+      -> target (.-dataset)
+        .-events
       , new-events-list
 
 defn add-element (target op no-bubble-collection)
@@ -135,7 +138,7 @@ defn apply-dom-changes (changes mount-point no-bubble-collection)
           :add-style $ add-style target op-data
           :replace-style $ replace-style target op-data
           :rm-style $ rm-style target op-data
-          :add-event $ add-event target op-data
+          :add-event $ add-event target op-data no-bubble-collection
           :rm-event $ rm-event target op-data
           :add $ add-element target op-data no-bubble-collection
           :rm $ rm-element target op-data

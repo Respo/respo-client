@@ -1,5 +1,5 @@
 
-ns respo-client.util.information $ :require $ [] hsl.core :refer $ [] hsl
+ns respo-client.util.information $ :require $ [] clojure.string :as string
 
 def no-bubble-events $ [] :on-focus :on-blur :on-scroll
 

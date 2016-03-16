@@ -1,5 +1,7 @@
 
-ns respo-client.renderer.make-dom $ :require $ [] respo-client.util.format :refer $ [] dashed->camel event->prop
+ns respo-client.renderer.make-dom $ :require
+  [] clojure.string :as string
+  [] respo-client.util.format :refer $ [] dashed->camel event->prop
 
 defn style->string (styles)
   string/join | $ ->> styles $ map $ fn (entry)
