@@ -25,10 +25,14 @@ defn event->string (x)
   subs (name x)
     , 3
 
+defn event->prop (x)
+  string/replace (name x)
+    , |- |
+
 defn event->edn (event)
   -- .log js/console "|simplify event:" event
   let
-    (simple-event $ case (.-type event) (|click $ {} :type :click) (|keydown $ {} :type :keydown :key-code $ .-keyCode event) (|input $ {} :type :input :value $ .-value $ .-target event) ({} :type (.-type event) (, :msg "|not recognized event")))
+    (simple-event $ case (.-type event) (|click $ {} :type :click) (|keydown $ {} :type :keydown :key-code $ .-keyCode event) (|input $ {} :type :input :value $ .-value $ .-target event) (|change $ {} :type :change :value $ .-value $ .-target event) ({} :type (.-type event) (, :msg "|not recognized event")))
 
     -- .log js/console "|simplify result:" simple-event
     , simple-event

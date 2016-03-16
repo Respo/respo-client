@@ -1,7 +1,5 @@
 
-ns respo-client.renderer.make-dom $ :require
-  [] clojure.string :as string
-  [] respo-client.util.format :refer $ [] dashed->camel
+ns respo-client.renderer.make-dom $ :require $ [] respo-client.util.format :refer $ [] dashed->camel event->prop
 
 defn style->string (styles)
   string/join | $ ->> styles $ map $ fn (entry)
@@ -62,10 +60,8 @@ defn make-element (virtual-element no-bubble-collection)
         -- .log js/console "|Looking into event:" entry
         let
           (event-name $ key entry)
-            name-in-string $ string/replace (name event-name)
-              , |- |
+            name-in-string $ event->prop event-name
             maybe-listener $ get no-bubble-collection event-name
-
           if (some? maybe-listener)
             aset element name-in-string maybe-listener
 

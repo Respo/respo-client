@@ -5,12 +5,9 @@ ns respo-client.controller.client $ :require
   [] respo-client.util.time :refer $ [] io-get-time
   [] respo-client.util.format :refer $ [] event->string event->edn
   [] respo-client.renderer.make-dom :refer $ [] make-element
+  [] respo-client.util.information :refer $ [] bubble-events no-bubble-events
 
 defonce dom-registry $ atom $ {}
-
-def no-bubble-events $ [] :on-scroll :on-focus :on-blur
-
-def bubble-events $ [] :on-click :on-input :on-wheel :on-keydown :on-dbclick :on-change
 
 defn read-coord (event)
   read-string $ ->> event (.-target)
