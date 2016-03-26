@@ -43,7 +43,7 @@ defn -main ()
 
 set! js/window.onload -main
 
-defn fig-reload ()
+defn on-jsload ()
   .clear js/console
   let
     (app-root $ .querySelector js/document |#app)
