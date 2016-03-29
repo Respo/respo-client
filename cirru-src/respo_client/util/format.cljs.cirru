@@ -1,5 +1,6 @@
 
-ns respo-client.util.format $ :require $ [] clojure.string :as string
+ns respo-client.util.format $ :require
+  [] clojure.string :as string
 
 defn dashed->camel
   (x)
@@ -31,8 +32,13 @@ defn event->prop (x)
 
 defn event->edn (event)
   -- .log js/console "|simplify event:" event
-  let
-    (simple-event $ case (.-type event) (|click $ {} :type :click) (|keydown $ {} :type :keydown :key-code $ .-keyCode event) (|input $ {} :type :input :value $ .-value $ .-target event) (|change $ {} :type :change :value $ .-value $ .-target event) ({} :type (.-type event) (, :msg "|not recognized event")))
-
-    -- .log js/console "|simplify result:" simple-event
-    , simple-event
+  case (.-type event)
+    |click $ {} :type :click
+    |keydown $ {} :type :keydown :key-code (.-keyCode event)
+    |input $ {} :type :input :value
+      .-value $ .-target event
+    |change $ {} :type :change :value
+      .-value $ .-target event
+    |focus $ {} (:type :focus)
+    {} :type (.-type event)
+      , :msg "|not recognized event"
