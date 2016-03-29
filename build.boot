@@ -1,7 +1,8 @@
 
 (set-env!
- :source-paths #{"src"}
- :resource-paths #{"assets"}
+ :asset-paths #{"assets"}
+ :source-paths #{}
+ :resource-paths #{"src"}
 
  :dev-dependencies '[]
  :dependencies '[[org.clojure/clojure "1.8.0"           :scope "provided"]
@@ -19,7 +20,7 @@
          '[html-entry.core :refer [html-entry]]
          '[cirru-sepal.core :refer [cirru-sepal]])
 
-(def +version+ "0.1.7")
+(def +version+ "0.1.8")
 
 (task-options!
   pom {:project     'mvc-works/respo-client
