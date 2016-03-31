@@ -34,6 +34,7 @@ defn event->edn (event)
   -- .log js/console "|simplify event:" event
   case (.-type event)
     |click $ {} :type :click
+    |dblclick $ {} :type :dblclick
     |keydown $ {} :type :keydown :key-code (.-keyCode event)
     |input $ {} :type :input :value
       .-value $ .-target event

@@ -20,7 +20,7 @@
          '[html-entry.core :refer [html-entry]]
          '[cirru-sepal.core :refer [cirru-sepal]])
 
-(def +version+ "0.1.8")
+(def +version+ "0.1.9")
 
 (task-options!
   pom {:project     'mvc-works/respo-client
@@ -49,6 +49,9 @@
         "window._appConfig = {env: 'dev'}")]
    [:body {:style "margin: 0;"}
     [:div#app] [:script {:src "main.js"}]]])
+
+(deftask compile-cirru []
+  (cirru-sepal :paths ["cirru-src"]))
 
 (deftask gen-static []
   (comp
