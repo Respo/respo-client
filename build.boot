@@ -3,6 +3,7 @@
  :asset-paths #{"assets"}
  :source-paths #{}
  :resource-paths #{"src"}
+ :target-path "target/"
 
  :dev-dependencies '[]
  :dependencies '[[org.clojure/clojure "1.8.0"           :scope "provided"]
@@ -53,12 +54,6 @@
 (deftask compile-cirru []
   (cirru-sepal :paths ["cirru-src"]))
 
-(deftask gen-static []
-  (comp
-    (cirru-sepal :paths ["cirru-src"])
-    (cljs)
-    (html-entry :dsl (html-dsl {:env :dev}) :html-name "index.html")))
-
 (deftask dev []
   (comp
     (html-entry :dsl (html-dsl {:env :dev}) :html-name "index.html")
@@ -67,29 +62,37 @@
     (reload :on-jsload 'respo-client.core/on-jsload)
     (cljs)))
 
-(deftask build-app []
-    (comp
-        (cljs :optimizations :advanced)
-        (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")))
+(deftask build-simple []
+  (comp
+    (compile-cirru)
+    (cljs :optimizations :simple)
+    (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")))
+
+(deftask build-advanced []
+  (comp
+    (compile-cirru)
+    (cljs :optimizations :advanced :compiler-options {})
+    (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")))
 
 (deftask rsync []
   (fn [next-task]
     (fn [fileset]
-        (sh "rsync" "-r" "target/" "tiye:repo/mvc-works/respo-client" "--exclude" "main.out" "--delete")
-        (next-task fileset))))
+      (sh "rsync" "-r" "target/" "tiye:repo/mvc-works/respo-client" "--exclude" "main.out" "--delete")
+      (next-task fileset))))
 
 (deftask send-tiye []
-    (comp
-        (build-app)
-        (rsync)))
+  (comp
+    (build-simple)
+    (rsync)))
 
 (deftask build []
   (comp
-   (pom)
-   (jar)
-   (install)))
+    (compile-cirru)
+    (pom)
+    (jar)
+    (install)))
 
 (deftask deploy []
   (comp
-   (build)
-   (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
+    (build)
+    (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
