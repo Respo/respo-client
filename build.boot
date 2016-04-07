@@ -21,7 +21,7 @@
          '[html-entry.core :refer [html-entry]]
          '[cirru-sepal.core :refer [cirru-sepal]])
 
-(def +version+ "0.1.9")
+(def +version+ "0.1.10")
 
 (task-options!
   pom {:project     'mvc-works/respo-client
@@ -60,19 +60,22 @@
     (cirru-sepal :paths ["cirru-src"] :watch true)
     (watch)
     (reload :on-jsload 'respo-client.core/on-jsload)
-    (cljs)))
+    (cljs)
+    (target)))
 
 (deftask build-simple []
   (comp
     (compile-cirru)
     (cljs :optimizations :simple)
-    (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")))
+    (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")
+    (target)))
 
 (deftask build-advanced []
   (comp
     (compile-cirru)
     (cljs :optimizations :advanced :compiler-options {})
-    (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")))
+    (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")
+    (target)))
 
 (deftask rsync []
   (fn [next-task]
@@ -90,7 +93,8 @@
     (compile-cirru)
     (pom)
     (jar)
-    (install)))
+    (install)
+    (target)))
 
 (deftask deploy []
   (comp

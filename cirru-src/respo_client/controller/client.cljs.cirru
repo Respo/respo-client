@@ -7,30 +7,43 @@ ns respo-client.controller.client $ :require
   [] respo-client.renderer.make-dom :refer $ [] make-element
   [] respo-client.util.information :refer $ [] bubble-events no-bubble-events
 
-defonce dom-registry $ atom $ {}
+defonce dom-registry $ atom ({})
 
-defn read-coord (event)
-  read-string $ ->> event (.-target)
-    .-dataset
+defn read-coord (target)
+  read-string $ ->> target (.-dataset)
     .-coord
 
-defn read-events (event)
-  read-string $ ->> event (.-target)
-    .-dataset
+defn read-events (target)
+  read-string $ ->> target (.-dataset)
     .-events
+
+defn maybe-trigger
+  target event-name simple-event deliver-event
+  let
+    (coord $ read-coord target)
+      active-events $ read-events target
+    if
+      some
+        fn (defined-event)
+          = event-name defined-event
+        , active-events
+
+      deliver-event coord event-name simple-event
+      if
+        > (count coord)
+          , 0
+        recur (.-parentElement target)
+          , event-name simple-event deliver-event
 
 defn build-listener (event-name deliver-event)
   fn (event)
     let
-      (coord $ read-coord event)
-        active-events $ read-events event
-      if
-        some
-          fn (defined-event)
-            = defined-event event-name
-          , active-events
+      (coord $ read-coord (.-target event))
+        active-events $ read-events (.-target event)
+        simple-event $ event->edn event
+        target $ .-target event
 
-        deliver-event coord event-name $ event->edn event
+      maybe-trigger target event-name simple-event deliver-event
 
 defn activate-instance (entire-dom mount-point deliver-event)
   let
@@ -50,13 +63,15 @@ defn initialize-instance (mount-point deliver-event)
   let
     (bubble-collection $ ->> bubble-events (map $ fn (event-name) ([] event-name $ build-listener event-name deliver-event)) (into $ {}))
 
-    doall $ ->> bubble-collection $ map $ fn (entry)
-      let
-        (event-string $ event->string $ name $ key entry)
-          listener $ val entry
-        .addEventListener mount-point event-string listener
+    doall $ ->> bubble-collection
+      map $ fn (entry)
+        let
+          (event-string $ event->string (name $ key entry))
+            listener $ val entry
 
-    swap! dom-registry assoc mount-point $ {} $ :listeners bubble-collection
+          .addEventListener mount-point event-string listener
+
+    swap! dom-registry assoc mount-point $ {} (:listeners bubble-collection)
 
 defn release-instance (mount-point)
   set! (.-innerHTML mount-point)
@@ -65,8 +80,9 @@ defn release-instance (mount-point)
     :listeners $ get @dom-registry mount-point
     map $ fn (entry)
       let
-        (event-string $ event->string $ key entry)
+        (event-string $ event->string (key entry))
           listener $ key entry
+
         .removeEventListener mount-point event-string listener
 
   swap! dom-registry dissoc mount-point
