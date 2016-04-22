@@ -4,26 +4,29 @@ ns respo-client.renderer.make-dom $ :require
   [] respo-client.util.format :refer $ [] dashed->camel event->prop
 
 defn style->string (styles)
-  string/join | $ ->> styles $ map $ fn (entry)
-    let
-      (k $ first entry)
-        v $ last entry
-      str (name k)
-        , |: v |;
+  string/join | $ ->> styles
+    map $ fn (entry)
+      let
+        (k $ first entry)
+          v $ last entry
+        str (name k)
+          , |: v |;
 
 defn make-element (virtual-element no-bubble-collection)
   let
-    (tag-name $ name $ :name virtual-element)
-      props $ :props virtual-element
+    (tag-name $ name (:name virtual-element))
+      attrs $ :attrs virtual-element
+      style $ :style virtual-element
       children $ into (sorted-map)
         :children virtual-element
       element $ .createElement js/document tag-name
-      child-elements $ ->> children $ map $ fn (entry)
-        let
-          (item $ last entry)
-          if (string? item)
-            .createTextNode js/document item
-            make-element item no-bubble-collection
+      child-elements $ ->> children
+        map $ fn (entry)
+          let
+            (item $ last entry)
+            if (string? item)
+              .createTextNode js/document item
+              make-element item no-bubble-collection
 
       event-keys $ into ([])
         keys $ :events virtual-element
@@ -38,26 +41,16 @@ defn make-element (virtual-element no-bubble-collection)
         .-events
       pr-str event-keys
 
-    doall $ ->> props
-      filter $ fn (entry)
-        let
-          (k $ name $ key entry)
-          =
-            re-find (re-pattern |^on-.+)
-              , k
-            , nil
-
+    doall $ ->> attrs
       map $ fn (entry)
         let
-          (k $ dashed->camel $ name $ first entry)
+          (k $ dashed->camel (name $ first entry))
             v $ last entry
-          .setAttribute element k $ if (= k |style)
-            style->string v
-            , v
-          aset element k $ if (= k |style)
-            style->string v
-            , v
 
+          .setAttribute element k v
+          aset element k v
+
+    .setAttribute element |style $ style->string style
     doall $ ->> (:events virtual-element)
       map $ fn (entry)
         -- .log js/console "|Looking into event:" entry
@@ -68,6 +61,8 @@ defn make-element (virtual-element no-bubble-collection)
           if (some? maybe-listener)
             aset element name-in-string maybe-listener
 
-    doall $ ->> child-elements $ map $ fn (child-element)
-      .appendChild element child-element
+    doall $ ->> child-elements
+      map $ fn (child-element)
+        .appendChild element child-element
+
     , element
