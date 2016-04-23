@@ -21,7 +21,7 @@
          '[html-entry.core :refer [html-entry]]
          '[cirru-sepal.core :refer [cirru-sepal]])
 
-(def +version+ "0.1.10")
+(def +version+ "0.1.11")
 
 (task-options!
   pom {:project     'mvc-works/respo-client

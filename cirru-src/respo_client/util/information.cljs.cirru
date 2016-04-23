@@ -1,6 +1,6 @@
 
 ns respo-client.util.information $ :require $ [] clojure.string :as string
 
-def no-bubble-events $ [] :on-focus :on-blur :on-scroll
+def no-bubble-events $ [] :focus :blur :scroll
 
-def bubble-events $ [] :on-click :on-dblclick :on-change :on-input :on-keydown :on-wheel
+def bubble-events $ [] :click :dblclick :change :input :keydown :wheel

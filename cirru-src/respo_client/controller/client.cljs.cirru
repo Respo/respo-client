@@ -15,13 +15,14 @@ defn read-coord (target)
 
 defn read-events (target)
   read-string $ ->> target (.-dataset)
-    .-events
+    .-event
 
 defn maybe-trigger
   target event-name simple-event deliver-event
   let
     (coord $ read-coord target)
       active-events $ read-events target
+    -- .log js/console coord active-events event-name
     if
       some
         fn (defined-event)
@@ -31,18 +32,17 @@ defn maybe-trigger
       deliver-event coord event-name simple-event
       if
         > (count coord)
-          , 0
+          , 1
         recur (.-parentElement target)
           , event-name simple-event deliver-event
 
 defn build-listener (event-name deliver-event)
   fn (event)
     let
-      (coord $ read-coord (.-target event))
-        active-events $ read-events (.-target event)
+      (target $ .-target event)
+        coord $ read-coord target
+        active-events $ read-events target
         simple-event $ event->edn event
-        target $ .-target event
-
       maybe-trigger target event-name simple-event deliver-event
 
 defn activate-instance (entire-dom mount-point deliver-event)
@@ -66,7 +66,7 @@ defn initialize-instance (mount-point deliver-event)
     doall $ ->> bubble-collection
       map $ fn (entry)
         let
-          (event-string $ event->string (name $ key entry))
+          (event-string $ name (key entry))
             listener $ val entry
 
           .addEventListener mount-point event-string listener
@@ -80,7 +80,7 @@ defn release-instance (mount-point)
     :listeners $ get @dom-registry mount-point
     map $ fn (entry)
       let
-        (event-string $ event->string (key entry))
+        (event-string $ name (key entry))
           listener $ key entry
 
         .removeEventListener mount-point event-string listener

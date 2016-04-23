@@ -85,7 +85,7 @@ defn add-event (target event-name no-bubble-collection)
   let
     (event-prop $ event->prop event-name)
       existing-events $ read-string $ -> target (.-dataset)
-        .-events
+        .-event
       new-events-list $ pr-str $ conj existing-events event-name
       maybe-listener $ get no-bubble-collection event-name
 
@@ -93,14 +93,14 @@ defn add-event (target event-name no-bubble-collection)
       aset target event-prop maybe-listener
     set!
       -> target (.-dataset)
-        .-events
+        .-event
       , new-events-list
 
 defn rm-event (target event-name)
   let
     (event-prop $ event->prop event-name)
       existing-events $ read-string $ -> target (.-dataset)
-        .-events
+        .-event
       new-events-list $ pr-str $ ->> existing-events
         filter $ fn (x)
           not= x event-name
@@ -110,7 +110,7 @@ defn rm-event (target event-name)
       aset target event-prop nil
     set!
       -> target (.-dataset)
-        .-events
+        .-event
       , new-events-list
 
 defn add-element (target op no-bubble-collection)

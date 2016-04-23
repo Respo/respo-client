@@ -29,7 +29,7 @@ defn make-element (virtual-element no-bubble-collection)
               make-element item no-bubble-collection
 
       event-keys $ into ([])
-        keys $ :events virtual-element
+        keys $ :event virtual-element
 
     set!
       ->> element (.-dataset)
@@ -38,7 +38,7 @@ defn make-element (virtual-element no-bubble-collection)
 
     set!
       ->> element (.-dataset)
-        .-events
+        .-event
       pr-str event-keys
 
     doall $ ->> attrs
@@ -51,7 +51,7 @@ defn make-element (virtual-element no-bubble-collection)
           aset element k v
 
     .setAttribute element |style $ style->string style
-    doall $ ->> (:events virtual-element)
+    doall $ ->> (:event virtual-element)
       map $ fn (entry)
         -- .log js/console "|Looking into event:" entry
         let
